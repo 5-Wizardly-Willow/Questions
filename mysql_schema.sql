@@ -51,16 +51,17 @@ on amazon it seemed like reviews and questions were left at a rate of 3:1
 If we were to assume all products were modestly popular with 3000 reviews, we could expect...
 1000 questions per product = 10,000,000 questions
 
-Amazon gets so many questions that they only show the ones with answers but even then each question only gets below 10 answers for the most part.
+Amazon gets so many questions that they only show the ones with answers but even then each question only gets below 10 answers. Normally 1-2 answers suffice and then votes on helpfullness validate them. Only controversial questions/answers get more answers.
+
 10 answers per question = 10,000,000 answers
 
 I have no good indicator for how many photos are left for answers so assuming people are very active...
 3 photos per answer = 30,000,000 photos
 
 
-high use case:
+high use, fully utilized case:
 10,000,000 * 1076 bytes = 10GB
-10,000,000 * 1076 bytes = 10GB
+100,000,000 * 1076 bytes = 107.6GB
 30,000,000 * 263 bytes = 7.89 GB
 
 ** will re-review once I see data
