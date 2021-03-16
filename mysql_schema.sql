@@ -1,18 +1,18 @@
-DROP DATABASE IF EXISTS questionanswers;
+DROP DATABASE IF EXISTS questionsdb;
 
-CREATE DATABASE questionanswers;
+CREATE DATABASE questionsdb;
 
-use questionanswers;
+USE questionsdb;
 
 -- 1076b per row
 CREATE TABLE questions (
   question_id INT NOT NULL AUTO_INCREMENT,
   product_id INT NOT NULL,
   question_body TEXT(1000),
-  question_date DATETIME,
+  question_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   asker_name VARCHAR(60),
-  question_helpfulness SMALLINT UNSIGNED,
-  reported BOOLEAN,
+  question_helpfulness SMALLINT UNSIGNED DEFAULT 0,
+  reported BOOLEAN DEFAULT 0,
 
   UNIQUE KEY (question_id),
   PRIMARY KEY (question_id)
@@ -23,10 +23,10 @@ CREATE TABLE answers (
   id INT NOT NULL AUTO_INCREMENT,
   question_id INT NOT NULL,
   body TEXT(1000),
-  answer_date DATETIME,
+  answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   answerer_name VARCHAR(60),
-  helpfulness SMALLINT UNSIGNED,
-  reported BOOLEAN,
+  helpfulness SMALLINT UNSIGNED DEFAULT 0,
+  reported BOOLEAN DEFAULT 0,
 
   UNIQUE KEY (id),
   PRIMARY KEY (id),
