@@ -4,13 +4,14 @@ CREATE DATABASE questionsdb;
 
 USE questionsdb;
 
--- 1076b per row
+-- 1331 bytes per row
 CREATE TABLE questions (
   question_id INT NOT NULL AUTO_INCREMENT,
   product_id INT NOT NULL,
   question_body TEXT(1000),
   question_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   asker_name VARCHAR(60),
+  email VARCHAR(255),
   question_helpfulness SMALLINT UNSIGNED DEFAULT 0,
   reported BOOLEAN DEFAULT 0,
 
@@ -18,13 +19,14 @@ CREATE TABLE questions (
   PRIMARY KEY (question_id)
 );
 
--- 1076b per row
+-- 1331 bytes per row
 CREATE TABLE answers (
   id INT NOT NULL AUTO_INCREMENT,
   question_id INT NOT NULL,
   body TEXT(1000),
   answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   answerer_name VARCHAR(60),
+  email VARCHAR(255),
   helpfulness SMALLINT UNSIGNED DEFAULT 0,
   reported BOOLEAN DEFAULT 0,
 

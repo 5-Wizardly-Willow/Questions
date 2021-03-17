@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 
-const Photos = new Schema({
+const PhotoSchema = new Schema({
   id: {
     type: Number,
     unique: true,
@@ -12,31 +12,35 @@ const Photos = new Schema({
   url: String,
 });
 
-const Answers = new Schema({
+const AnswerSchema = new Schema({
   id: {
     type: Number,
     unique: true,
     index: true,
     required: true,
   },
-  bdody: String,
+  body: String,
   date: Date,
   answerer_name: String,
-  helpfulness: Number,
-  photos: [Photos],
+  email: String,
+  helpfulness: { type: Number, default: 0 },
+  reported: { type: Boolean, default: false },
+  photos: [PhotoSchema],
 });
 
-const ReviewSchema = new Schema({
+const QuestionSchema = new Schema({
   question_id: {
     type: Number,
     unique: true,
     index: true,
     required: true,
   },
+  product_id: { type: Number, required : true },
   question_body: String,
   question_date: { type: Date, default: Date.now },
   asker_name: String,
-  question_helpfulness: Number,
-  reported: Boolean
-  answers: [Answers],
+  email: String,
+  question_helpfulness: { type: Number, default: 0 },
+  reported: { type: Boolean, default: false },
+  answers: [AnswerSchema],
 });
