@@ -12,8 +12,8 @@ CREATE TABLE questions (
   question_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   asker_name VARCHAR(60),
   email VARCHAR(255),
-  question_helpfulness SMALLINT UNSIGNED DEFAULT 0,
   reported BOOLEAN DEFAULT 0,
+  question_helpfulness SMALLINT UNSIGNED DEFAULT 0,
 
   UNIQUE KEY (question_id),
   PRIMARY KEY (question_id)
@@ -27,8 +27,9 @@ CREATE TABLE answers (
   answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   answerer_name VARCHAR(60),
   email VARCHAR(255),
-  helpfulness SMALLINT UNSIGNED DEFAULT 0,
   reported BOOLEAN DEFAULT 0,
+  helpfulness SMALLINT UNSIGNED DEFAULT 0,
+
 
   UNIQUE KEY (id),
   PRIMARY KEY (id),
@@ -45,6 +46,30 @@ CREATE TABLE photos (
   PRIMARY KEY (id),
   FOREIGN KEY (answer_id) REFERENCES answers (id)
 );
+
+
+LOAD DATA LOCAL
+INFILE '../data/questions_clean.csv'
+INTO TABLE questions
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+/*
+LOAD DATA LOCAL
+INFILE '../data/answers_clean.csv'
+INTO TABLE answers
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL
+INFILE '../data/answers_photos_clean.csv'
+INTO TABLE answers
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+*/
 
 /*
 10k products

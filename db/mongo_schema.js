@@ -19,6 +19,7 @@ const AnswerSchema = new Schema({
     index: true,
     required: true,
   },
+  question_id: { type: Number, required: true },
   body: String,
   date: Date,
   answerer_name: String,
