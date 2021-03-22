@@ -1,0 +1,29 @@
+{
+  "name": "Questions",
+  "version": "1.0.0",
+  "description": "## CLIENT USAGE NOTES 1. View questions 1. Search questions 1. Asking a question 1. Answering a question",
+  "scripts": {
+    "nodemon": "nodemon server/server.js",
+    "start": "node server/server.js",
+    "startdev": "MYSQL_HOST=localhost nodemon server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/5-Wizardly-Willow/Questions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/5-Wizardly-Willow/Questions/issues"
+  },
+  "homepage": "https://github.com/5-Wizardly-Willow/Questions#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}

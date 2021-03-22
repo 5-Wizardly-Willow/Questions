@@ -55,7 +55,6 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
 
-/*
 LOAD DATA LOCAL
 INFILE '../data/answers_clean.csv'
 INTO TABLE answers
@@ -65,11 +64,11 @@ LINES TERMINATED BY '\n';
 
 LOAD DATA LOCAL
 INFILE '../data/answers_photos_clean.csv'
-INTO TABLE answers
+INTO TABLE photos
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
-*/
+
 
 /*
 10k products
@@ -92,5 +91,15 @@ high use, fully utilized case:
 30,000,000 * 263 bytes = 7.89 GB
 
 ** will re-review once I see data
+
+*/
+
+
+/* -- show database sizes(storage)
+
+SELECT questions AS "Database",
+ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS "Size (MB)"
+FROM information_schema.TABLES
+GROUP BY table_schema;
 
 */

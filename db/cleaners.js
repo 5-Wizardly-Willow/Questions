@@ -13,7 +13,13 @@ const isDigits = (str) => {
   return !regex.test(str);
 }
 
-function isValidURL(str) {
+function isValidURL(url) {
+  let str = url;
+  // remove surrounding double quotes
+  if (url[0] === '"' && url[0] === url[url.length - 1]) {
+    str = url.substring(1, url.length - 1);
+  }
+
   return !!urlPattern.test(str);
 }
 
@@ -122,7 +128,7 @@ const cleanAnswers = (line) => {
   }
 };
 
-//5.688s
+//6.847s
 const cleanAnswersPhotos = (line) => {
   const fields = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
   let isValid = true;
@@ -135,18 +141,14 @@ const cleanAnswersPhotos = (line) => {
     // answer_id -1
     isValid = isDigits(fields[1]) ? isValid : false;
     // url - 2
-    url = fields[2];
-    if (url[0] === '"' && url[0] === url[url.length - 1]) {
-      url = url.substring(1, url.length - 1);
-    }
-    isValid = isValidURL(url) ? isValid : false;
+    isValid = isValidURL(fields[2]) ? isValid : false;
 
   } else {
     isValid = false;
   }
 
   if (isValid) {
-    return [fields[0], fields[1], url].join(',');
+    return line;
   } else {
     return false;
   }
