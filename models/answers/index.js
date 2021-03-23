@@ -7,7 +7,7 @@ const db = require('../../db/database.js');
  * @param {string} page - page number of answers, default 1
  * @param {int} count - number of answers in a page, default 5
  */
-const getAnswersByQuestion = (question_id, page, count) => {
+const selectAnswersByQuestion = (question_id, page, count) => {
   return db.query(`
     WITH top_answers AS (
       SELECT *
@@ -41,7 +41,7 @@ const getAnswersByQuestion = (question_id, page, count) => {
  * @param {string} name - name of the person posting the answer
  * @param {string} email - email of the person posting the answer
  */
-const postAnswerForQuestion = (question_id, body, name, email) => {
+const insertAnswerForQuestion = (question_id, body, name, email) => {
   return db.query(`
     INSERT INTO answers (question_id, body, answerer_name, email)
       VALUES (?, ?, ?, ?)
@@ -54,7 +54,7 @@ const postAnswerForQuestion = (question_id, body, name, email) => {
  * @param {string} answer_id - id (foreign key) of the related answer record
  * @param {string[]} photos - array of urls for photos
  */
-const postPhotosForAnswer = (answer_id, photos) => {
+const insertPhotosForAnswer = (answer_id, photos) => {
   const photosSQL = photos.map(url => `(${db.escape(answer_id)}, ${db.escape(url)})`);
 
   return db.query(`
@@ -63,8 +63,32 @@ const postPhotosForAnswer = (answer_id, photos) => {
   `);
 };
 
+/**
+ * UPDATES answer record setting reported to 1.
+ * @function
+ * @param {string} answer_id - id (foreign key) of the related answer record
+ */
+const updateAnswerReported = (answer_id) => {
+  return db.query(`
+    UPDATE answers SET reported = 1 WHERE id = ?;
+  `, [answer_id]);
+};
+
+/**
+ * UPDATES answer record, increments the helpfulness column.
+ * @function
+ * @param {string} answer_id - id (foreign key) of the related answer record
+ */
+const updateAnswerHelpfulness = (answer_id) => {
+  return db.query(`
+    UPDATE answers SET helpfulness = helpfulness + 1 WHERE id = ?;
+  `, [answer_id]);
+};
+
 module.exports = {
-  getAnswersByQuestion,
-  postAnswerForQuestion,
-  postPhotosForAnswer,
+  insertAnswerForQuestion,
+  insertPhotosForAnswer,
+  selectAnswersByQuestion,
+  updateAnswerHelpfulness,
+  updateAnswerReported,
 };

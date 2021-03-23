@@ -1,10 +1,14 @@
-const { getQuestionsByProduct } = require('../../models/questions');
+const {
+  incrementQuestionHelpfulness,
+  reportQuestion,
+  selectQuestionsByProduct,
+} = require('../../models/questions');
 
 const getQuestions = (req, res) => {
   const { product_id } = req.params;
   const { page = 1, count = 5 } = req.query;
 
-  getQuestionsByProduct(product_id, parseInt(page), parseInt(count))
+  selectQuestionsByProduct(product_id, parseInt(page), parseInt(count))
     .catch((err) => {
       console.log(err);
       return res.status(400).send(err);
@@ -77,6 +81,42 @@ const getQuestions = (req, res) => {
     });
 };
 
+
+const markQuestionReported = (req, res) => {
+  const { question_id } = req.params;
+
+  if (!question_id) {
+    return res.sendStatus(400);
+  }
+
+  reportQuestion(question_id)
+    .then(() => {
+      console.log('reported');
+      res.sendStatus(204);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+}
+
+const markQuestionHelpful = (req, res) => {
+  const { question_id } = req.params;
+
+  if (!question_id) {
+    return res.sendStatus(400);
+  }
+
+  incrementQuestionHelpfulness(question_id)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+}
+
 module.exports = {
   getQuestions,
+  markQuestionHelpful,
+  markQuestionReported,
 };

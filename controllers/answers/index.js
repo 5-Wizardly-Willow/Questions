@@ -1,14 +1,16 @@
 const {
-  getAnswersByQuestion,
-  postAnswerForQuestion,
-  postPhotosForAnswer,
+  insertAnswerForQuestion,
+  insertPhotosForAnswer,
+  selectAnswersByQuestion,
+  updateAnswerHelpfulness,
+  updateAnswerReported,
 } = require('../../models/answers');
 
 const getAnswers = (req, res) => {
   const { question_id } = req.params;
   const { page = 1, count = 5 } = req.query;
 
-  getAnswersByQuestion(question_id, parseInt(page), parseInt(count))
+  selectAnswersByQuestion(question_id, parseInt(page), parseInt(count))
     .catch((err) => {
       return res.status(400).send(err);
     })
@@ -60,19 +62,69 @@ const postAnswer = (req, res) => {
     photos
   } = req.body;
 
-  postAnswerForQuestion(question_id, body, name, email)
-    .then(([results, fields]) => {
-      const answer_id = results.insertId;
-      return postPhotosForAnswer(answer_id, photos);
+  insertAnswerForQuestion(question_id, body, name, email)
+    .catch((err) => {
+      err.position = "On POST Answer INSERT answer";
+      throw err;
     })
-    .then(([rows, fields]) => {
+    .then(([results, fields]) => {
+      if (!photos || photos.length < 1) {
+        return;
+      }
 
+      const answer_id = results.insertId;
+
+      return insertPhotosForAnswer(answer_id, photos)
+        .catch((err) => {
+          err.position = "On POST Answer INSERT photos";
+          throw err;
+        });
+    })
+    .then(() => {
       res.sendStatus(201);
     })
-    .catch((err) => res.status(400).send);
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 };
+
+const markAnswerReported = (req, res) => {
+  const { answer_id } = req.params;
+
+  if (!answer_id) {
+    return res.sendStatus(400);
+  }
+
+  updateAnswerReported(answer_id)
+    .then(() => {
+      console.log('reported');
+      res.sendStatus(204);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+}
+
+const markAnswerHelpful = (req, res) => {
+  const { answer_id } = req.params;
+
+  if (!answer_id) {
+    return res.sendStatus(400);
+  }
+
+  updateAnswerHelpfulness(answer_id)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+}
+
 
 module.exports = {
   getAnswers,
+  markAnswerHelpful,
+  markAnswerReported,
   postAnswer,
 };
