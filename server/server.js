@@ -2,6 +2,10 @@ const express = require('express');
 const axios = require('axios');
 
 const db = require('../db/database.js');
+const {
+  getQuestionsByProduct,
+  getAnswersByQuestion,
+} = require('../db/queries');
 
 const app = express();
 const PORT = 3000;
@@ -24,32 +28,19 @@ app.get('/api/test', (req, res) => {
 
 app.get('/api/products/:product_id/questions', (req, res) => {
   const { product_id } = req.params;
-  db.query(`
-    SELECT
-      questions.*,
-      answers.id AS answer_id,
-      answers.body AS answer_body,
-      answers.answer_date,
-      answers.answerer_name,
-      answers.helpfulness AS answer_helpfulness,
-      photos.id AS photo_id,
-      photos.url AS photo_url
-    FROM questions
-    LEFT JOIN answers USING (question_id)
-    LEFT JOIN photos ON answers.id=photos.answer_id
-    WHERE product_id = ?;`, [product_id])
+  const { page = 1, count = 5 } = req.query;
+
+  getQuestionsByProduct(product_id, parseInt(page), parseInt(count))
     .catch((err) => {
       console.log(err);
       return res.status(400).send(err);
     })
     .then(([rows, fields]) => {
-      console.log('questions for ', req.params.product_id);
-
       const result = {
         product_id,
         results: []
       };
-      console.log(1);
+
       const questions = rows.reduce((acc, current) => {
         const {
           question_id,
@@ -66,7 +57,6 @@ app.get('/api/products/:product_id/questions', (req, res) => {
           photo_id,
           photo_url
         } = current;
-
 
         if (acc[question_id] === undefined) {
           acc[question_id] = {
@@ -103,16 +93,60 @@ app.get('/api/products/:product_id/questions', (req, res) => {
         return acc;
       }, {});
 
-      console.log(2);
-      console.log(questions);
-      result.results = Object.values(questions);
-      console.log(result);
+      result.results = Object.values(questions).sort((a, b) => b.question_helpfulness - a.question_helpfulness);
 
       res.status(200).send(result);
     })
     .catch((err) => {
       console.log(err);
       return res.status(500).send(err);
+    });
+});
+
+app.get('/api/questions/:question_id/answers', (req, res) => {
+  const { question_id } = req.params;
+  const { page = 1, count = 5 } = req.query;
+
+  getAnswersByQuestion(question_id, parseInt(page), parseInt(count))
+    .catch((err) => {
+      return res.status(400).send(err);
+    })
+    .then(([rows, fields]) => {
+      const answers = rows.map(({
+        id,
+        question_id,
+        body,
+        answer_date,
+        answerer_name,
+        helpfulness,
+        photos,
+      }) => {
+        return {
+          answer_id: id,
+          body,
+          date: answer_date,
+          answerer_name,
+          helpfulness,
+          photos: Object.entries(photos || {}).map(([id, url]) => {
+            return {
+              id,
+              url
+            };
+          }),
+        };
+      });
+
+      const responseObj = {
+        question: question_id,
+        page,
+        count,
+        results: answers,
+      };
+
+      res.status(200).send(responseObj);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
     });
 });
 
