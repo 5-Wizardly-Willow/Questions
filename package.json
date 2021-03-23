@@ -5,7 +5,7 @@
   "scripts": {
     "nodemon": "nodemon server/server.js",
     "start": "node server/server.js",
-    "startdev": "MYSQL_HOST=localhost nodemon server/server.js"
+    "startdev": "MYSQL_HOST=localhost MYSQL_USER=root nodemon server/server.js"
   },
   "repository": {
     "type": "git",
