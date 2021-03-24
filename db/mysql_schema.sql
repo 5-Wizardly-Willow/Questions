@@ -19,6 +19,10 @@ CREATE TABLE questions (
   PRIMARY KEY (question_id)
 );
 
+CREATE INDEX questions_productid_ix ON questions (product_id);
+CREATE INDEX questions_reported_ix ON questions (reported);
+CREATE INDEX questions_helpfulness_ix ON questions (question_helpfulness);
+
 -- 1331 bytes per row
 CREATE TABLE answers (
   id INT NOT NULL AUTO_INCREMENT,
@@ -35,6 +39,8 @@ CREATE TABLE answers (
   PRIMARY KEY (id),
   FOREIGN KEY (question_id) REFERENCES questions (question_id)
 );
+
+CREATE INDEX answers_date_reported_ix ON answers (answer_date, reported);
 
 -- 263 bytes per row
 CREATE TABLE photos (
