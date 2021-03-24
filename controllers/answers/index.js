@@ -62,6 +62,12 @@ const postAnswer = (req, res) => {
     photos
   } = req.body;
 
+  [body, name, email].forEach((param) => {
+    if (typeof param !== 'string' || param.length < 1) {
+      return res.statusStatus(400);
+    }
+  });
+
   insertAnswerForQuestion(question_id, body, name, email)
     .catch((err) => {
       err.position = "On POST Answer INSERT answer";

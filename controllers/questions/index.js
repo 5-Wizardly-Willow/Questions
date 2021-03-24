@@ -1,5 +1,6 @@
 const {
   incrementQuestionHelpfulness,
+  insertQuestionForProduct,
   reportQuestion,
   selectQuestionsByProduct,
 } = require('../../models/questions');
@@ -115,8 +116,30 @@ const markQuestionHelpful = (req, res) => {
     });
 }
 
+const postQuestion = (req, res) => {
+  const {
+    body,
+    name,
+    email,
+    product_id,
+  } = req.body;
+
+  if (!(parseInt(product_id) > 0)) {
+    return res.sendStatus(400);
+  }
+
+  insertQuestionForProduct(product_id, body, name, email)
+    .then(([result, fields]) => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
+
 module.exports = {
   getQuestions,
   markQuestionHelpful,
   markQuestionReported,
+  postQuestion,
 };

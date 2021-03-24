@@ -49,8 +49,24 @@ const incrementQuestionHelpfulness = (question_id) => {
   `, [question_id]);
 };
 
+/**
+ * INSERTS a question for a product
+ * @function
+ * @param {string} product_id - id (foreign key) of the related product
+ * @param {string} body - text of answer
+ * @param {string} name - name of the person posting the answer
+ * @param {string} email - email of the person posting the answer
+ */
+const insertQuestionForProduct = (product_id, body, name, email) => {
+  return db.query(`
+    INSERT INTO questions (product_id, question_body, asker_name, email)
+      VALUES (?, ?, ?, ?);
+  `, [product_id, body, name, email]);
+};
+
 module.exports = {
   incrementQuestionHelpfulness,
+  insertQuestionForProduct,
   reportQuestion,
   selectQuestionsByProduct,
 };
