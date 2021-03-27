@@ -8,13 +8,9 @@ const {
 const getQuestions = (req, res) => {
   const { product_id } = req.params;
   const { page = 1, count = 5 } = req.query;
-
-  selectQuestionsByProduct(product_id, parseInt(page), parseInt(count))
-    .catch((err) => {
-      console.log(err);
-      return res.status(400).send(err);
-    })
+  const promise = selectQuestionsByProduct(product_id, parseInt(page), parseInt(count))
     .then(([rows, fields]) => {
+      console.log('selectQuestionsByProduct');
       const result = {
         product_id,
         results: []
@@ -73,13 +69,15 @@ const getQuestions = (req, res) => {
       }, {});
 
       result.results = Object.values(questions).sort((a, b) => b.question_helpfulness - a.question_helpfulness);
-
-      res.status(200).send(result);
+      return result;
     })
-    .catch((err) => {
-      console.log(err);
-      return res.status(500).send(err);
-    });
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).send(err);
+      });
 };
 
 
